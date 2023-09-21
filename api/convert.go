@@ -50,7 +50,7 @@ func Convert(writer http.ResponseWriter, request *http.Request) {
 		startIndex = strings.Index(req.Ddl, "create")
 	}
 	endIndex := strings.LastIndex(req.Ddl, ")")
-	dm := req.Ddl[startIndex : endIndex+1]
+	dm := req.Ddl[startIndex:endIndex]
 	dm = strings.ReplaceAll(dm, "AUTO_INCREMENT", "IDENTITY (1, 1)")
 
 	resp.Code = "200"
