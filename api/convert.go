@@ -62,6 +62,7 @@ func mapRule() map[string]string {
 		"`":                           "\"",
 		"longtext":                    "clob",
 		"ON UPDATE CURRENT_TIMESTAMP": "",
+		"NOT NULL":                    "",
 	}
 }
 
@@ -81,6 +82,6 @@ func mysqlToDm(ddl string) string {
 	ddl = ddl[startIndex : endIndex+1]
 	regex := regexp.MustCompile(`,?\s*\n*PRIMARY\s+KEY\s*\([^)]+\)`)
 	ddl = regex.ReplaceAllString(ddl, "")
-	ddl = strings.ReplaceAll(ddl, "AUTO_INCREMENT", "IDENTITY(1, 1) PRIMARY KEY")
-	return ddl + ";"
+	ddl = strings.ReplaceAll(ddl, "AUTO_INCREMENT", "PRIMARY KEY IDENTITY(1, 1) ")
+	return ddl
 }
