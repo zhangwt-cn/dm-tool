@@ -79,8 +79,8 @@ func mysqlToDm(ddl string) string {
 		startIndex = strings.Index(ddl, "create")
 	}
 	endIndex := strings.LastIndex(ddl, ")")
-	ddl = ddl[startIndex : endIndex+1]
+	ddl = ddl[startIndex:endIndex]
 	regex := regexp.MustCompile(`,?\s*\n*PRIMARY\s+KEY\s*\([^)]+\)`)
 	ddl = regex.ReplaceAllString(ddl, "")
-	return ddl
+	return ddl + ");"
 }
