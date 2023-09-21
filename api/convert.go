@@ -71,6 +71,7 @@ func mysqlToDm(ddl string) string {
 	// rule
 	for oldKey, newKey := range mapRule() {
 		ddl = strings.ReplaceAll(ddl, oldKey, newKey)
+		log.Printf("规则转换结果：{%s}", ddl)
 	}
 
 	// remove PRIMARY KEY (`id`)
