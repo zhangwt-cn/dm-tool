@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -41,20 +42,8 @@ func Convert(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	// dm rule handle
-	req.Ddl = strings.ReplaceAll(req.Ddl, "`", "\"")
-	req.Ddl = strings.ReplaceAll(req.Ddl, "longtext", "clob")
-	req.Ddl = strings.ReplaceAll(req.Ddl, "ON UPDATE CURRENT_TIMESTAMP", "")
-	startIndex := strings.Index(req.Ddl, "CREATE")
-	if startIndex < 0 {
-		startIndex = strings.Index(req.Ddl, "create")
-	}
-	endIndex := strings.LastIndex(req.Ddl, ")")
-	dm := req.Ddl[startIndex : endIndex+1]
-	dm = strings.ReplaceAll(dm, "AUTO_INCREMENT", "IDENTITY(1, 1)")
-
 	resp.Code = "200"
-	resp.Data = dm
+	resp.Data = mysqlToDm(req.Ddl)
 	resp.Msg = "success"
 	resp.response(writer)
 }
@@ -64,4 +53,40 @@ func (resp Resp) response(writer http.ResponseWriter) {
 	if err := json.NewEncoder(writer).Encode(resp); err != nil {
 		return
 	}
+}
+
+// handle rule
+func mapRule() map[string]string {
+	// rule
+	return map[string]string{
+		"`":                           "\"",
+		"longtext":                    "clob",
+		"ON UPDATE CURRENT_TIMESTAMP": "",
+		"AUTO_INCREMENT":              "IDENTITY(1, 1) PRIMARY KEY",
+	}
+}
+
+// mysqlToDm
+func mysqlToDm(ddl string) string {
+	// rule
+	for oldKey, newKey := range mapRule() {
+		strings.ReplaceAll(ddl, oldKey, newKey)
+	}
+
+	// remove PRIMARY KEY (`id`)
+	startIndex := strings.Index(ddl, "CREATE")
+	if startIndex < 0 {
+		startIndex = strings.Index(ddl, "create")
+	}
+	endIndex := strings.LastIndex(ddl, ")")
+	ddl = ddl[startIndex : endIndex+1]
+	arr := strings.Split(ddl, ",")
+	var dm strings.Builder
+	for _, str := range arr {
+		regex := regexp.MustCompile(`PRIMARY\s+KEY\s*\([^)]+\)`)
+		if !regex.MatchString(str) {
+			dm.WriteString(str)
+		}
+	}
+	return dm.String()
 }
