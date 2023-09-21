@@ -71,10 +71,8 @@ func mysqlToDm(ddl string) string {
 	// rule
 	for oldKey, newKey := range mapRule() {
 		ddl = strings.ReplaceAll(ddl, oldKey, newKey)
-		log.Printf("规则转换结果：{%s}", ddl)
 	}
 
-	log.Print(ddl)
 	// remove PRIMARY KEY (`id`)
 	startIndex := strings.Index(ddl, "CREATE")
 	if startIndex < 0 {
@@ -82,13 +80,7 @@ func mysqlToDm(ddl string) string {
 	}
 	endIndex := strings.LastIndex(ddl, ")")
 	ddl = ddl[startIndex : endIndex+1]
-	arr := strings.Split(ddl, ",")
-	var dm strings.Builder
-	for _, str := range arr {
-		regex := regexp.MustCompile(`PRIMARY\s+KEY\s*\([^)]+\)`)
-		if !regex.MatchString(str) {
-			dm.WriteString(str)
-		}
-	}
-	return dm.String()
+	regex := regexp.MustCompile(`,?\s*\n*PRIMARY\s+KEY\s*\([^)]+\)`)
+	ddl = regex.ReplaceAllString(ddl, "")
+	return ddl
 }
