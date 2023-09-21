@@ -59,10 +59,14 @@ func (resp Resp) response(writer http.ResponseWriter) {
 func mapRule() map[string]string {
 	// rule
 	return map[string]string{
-		"`":                           "\"",
-		"longtext":                    "clob",
-		"ON UPDATE CURRENT_TIMESTAMP": "",
-		"NOT NULL":                    "",
+		"`":                               "\"",
+		"(?i)longtext":                    "CLOB",
+		"(?i)ON UPDATE CURRENT_TIMESTAMP": "",
+		"(?i)NOT NULL":                    "",
+		"(?i),?\\s*\\n*PRIMARY\\s+KEY\\s*\\([^)]+\\)": "",
+		"(?i)(int)\\s*\\(\\s*\\d+\\s*\\)":             "INT",
+		"(?i)(bigint)\\s*\\(\\s*\\d+\\s*\\)":          "BIGINT",
+		"(?i)(tinyint)\\s*\\(\\s*\\d+\\s*\\)":         "TINYINT",
 	}
 }
 
@@ -70,7 +74,8 @@ func mapRule() map[string]string {
 func mysqlToDm(ddl string) string {
 	// rule
 	for oldKey, newKey := range mapRule() {
-		ddl = strings.ReplaceAll(ddl, oldKey, newKey)
+		regex := regexp.MustCompile(oldKey)
+		ddl = regex.ReplaceAllString(ddl, newKey)
 	}
 
 	// remove PRIMARY KEY (`id`)
@@ -80,8 +85,6 @@ func mysqlToDm(ddl string) string {
 	}
 	endIndex := strings.LastIndex(ddl, ")")
 	ddl = ddl[startIndex : endIndex+1]
-	regex := regexp.MustCompile(`,?\s*\n*PRIMARY\s+KEY\s*\([^)]+\)`)
-	ddl = regex.ReplaceAllString(ddl, "")
 	ddl = strings.ReplaceAll(ddl, "AUTO_INCREMENT", "PRIMARY KEY IDENTITY(1, 1) ")
 	return ddl
 }
