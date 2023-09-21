@@ -45,6 +45,7 @@ func Convert(writer http.ResponseWriter, request *http.Request) {
 	req.Ddl = strings.ReplaceAll(req.Ddl, "`", "\"")
 	req.Ddl = strings.ReplaceAll(req.Ddl, "longtext", "clob")
 	req.Ddl = strings.ReplaceAll(req.Ddl, "ON UPDATE CURRENT_TIMESTAMP", "")
+	req.Ddl = strings.ReplaceAll(req.Ddl, "AUTO_INCREMENT", "IDENTITY (1, 1)")
 	startIndex := strings.Index(req.Ddl, "CREATE")
 	if startIndex < 0 {
 		startIndex = strings.Index(req.Ddl, "create")
