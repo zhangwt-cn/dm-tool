@@ -82,5 +82,5 @@ func mysqlToDm(ddl string) string {
 	regex := regexp.MustCompile(`,?\s*\n*PRIMARY\s+KEY\s*\([^)]+\)`)
 	ddl = regex.ReplaceAllString(ddl, "")
 	ddl = strings.ReplaceAll(ddl, "AUTO_INCREMENT", "IDENTITY(1, 1) PRIMARY KEY")
-	return ddl
+	return ddl + ";"
 }
