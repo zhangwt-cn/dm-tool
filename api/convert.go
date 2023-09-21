@@ -70,7 +70,7 @@ func mapRule() map[string]string {
 func mysqlToDm(ddl string) string {
 	// rule
 	for oldKey, newKey := range mapRule() {
-		strings.ReplaceAll(ddl, oldKey, newKey)
+		ddl = strings.ReplaceAll(ddl, oldKey, newKey)
 	}
 
 	// remove PRIMARY KEY (`id`)
