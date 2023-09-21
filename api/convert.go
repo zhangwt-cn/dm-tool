@@ -74,6 +74,7 @@ func mysqlToDm(ddl string) string {
 		log.Printf("规则转换结果：{%s}", ddl)
 	}
 
+	log.Print(ddl)
 	// remove PRIMARY KEY (`id`)
 	startIndex := strings.Index(ddl, "CREATE")
 	if startIndex < 0 {
