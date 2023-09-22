@@ -125,14 +125,13 @@
                     return response.json();
                 })
                 .then(data => {
-                    var content = data.msg
-                    if (data.code == "200") {
+                    let content = data.msg;
+                    if (data.code === "200") {
                         content = data.data
                     }
                     // 处理接口响应
-                    const mockApiResponse = `DM DDL 👇 <pre>${content}</pre>`;
                     // 更新模态框内容
-                    modalResult.innerHTML = mockApiResponse;
+                    modalResult.innerHTML = `DM DDL 👇 <pre style="text-align: left;">${content}</pre>`;
                     // 显示模态框
                     modal.style.display = "block";
                 })
