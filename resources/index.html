@@ -95,6 +95,8 @@
             z-index: 1000;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
 </head>
 <body>
     <h1>DDL转换(MySQL -> DM)</h1>
@@ -113,7 +115,7 @@
           ) ENGINE=InnoDB AUTO_INCREMENT=164 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='日报表';
           "></textarea>
         <br>
-        <button id="submitButton" type="button">调用接口</button>
+        <button id="submitButton" type="button">转换</button>
     </form>
 
     <!-- GitHub 图标链接 -->
@@ -130,9 +132,7 @@
     </div>
 
     <!-- Loading状态的遮罩层 -->
-    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-        <div>Loading...</div>
-    </div>
+    <div id="loading" style="display: none" class="loading-overlay animate__animated animate__bounce">Loading...</div>
 
     <script>
         // JavaScript部分
@@ -140,9 +140,11 @@
         const submitButton = document.getElementById("submitButton");
         const modal = document.getElementById("myModal");
         const modalResult = document.getElementById("modalResult");
-        const loadingOverlay = document.getElementById("loadingOverlay");
+        const loadingOverlay = document.getElementById("loading");
 
         submitButton.addEventListener("click", () => {
+            // 显示Loading状态
+            loadingOverlay.style.display = "block";
             const inputValue = inputTextarea.value;
 
             // 构建POST请求的配置
