@@ -1,7 +1,7 @@
 {
   "routes": [
     {
-      "src": "/api/dm-convert",
+      "src": "/api/convert",
       "dest": "/api/convert.go",
       "methods": ["POST"]
     },
