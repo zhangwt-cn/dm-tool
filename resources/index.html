@@ -67,13 +67,28 @@
             border-radius: 5px;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
         }
+        /* 右上角 GitHub 图标样式 */
+        .github-icon {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+
+        /* GitHub 图标样式 */
+        .github-icon img {
+            width: 32px; /* 图标宽度 */
+            height: 32px; /* 图标高度 */
+            border-radius: 50%; /* 可选：将图标变成圆形 */
+        }
     </style>
 </head>
 <body>
     <h1>DDL转换(MySQL -> DM)</h1>
     <form>
         <br>
-        <textarea id="inputTextarea" placeholder="CREATE TABLE `daily` (
+        <textarea id="inputTextarea" placeholder="
+        CREATE TABLE `daily` (
             `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
             `fill_name` varchar(64) NOT NULL DEFAULT '' COMMENT '填报人',
             `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -87,6 +102,11 @@
         <br>
         <button id="submitButton" type="button">调用接口</button>
     </form>
+
+    <!-- GitHub 图标链接 -->
+    <a href="https://github.com/zhangwt-cn/dm-tool" target="_blank" class="github-icon">
+        <img src="github-mark.png" alt="GitHub" />
+    </a>
 
     <!-- 模态框 -->
     <div id="myModal" class="modal">
