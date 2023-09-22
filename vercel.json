@@ -7,8 +7,7 @@
     },
     {
       "src": "/",
-      "dest": "/resources/index.html",
-      "methods": ["POST"]
+      "dest": "/resources/index.html"
     }
   ]
 }

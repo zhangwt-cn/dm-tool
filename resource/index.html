@@ -117,7 +117,7 @@
 
             // 模拟API请求
             // 在实际应用中，您需要替换以下URL为您要请求的接口URL
-            fetch("https://dm-convert.vercel.app/api/dm-convert", requestOptions)
+            fetch("/api/convert", requestOptions)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
