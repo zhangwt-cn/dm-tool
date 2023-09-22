@@ -81,6 +81,19 @@
             height: 32px; /* 图标高度 */
             border-radius: 50%; /* 可选：将图标变成圆形 */
         }
+        /* Loading状态样式 */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -116,12 +129,18 @@
         </div>
     </div>
 
+    <!-- Loading状态的遮罩层 -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div>Loading...</div>
+    </div>
+
     <script>
         // JavaScript部分
         const inputTextarea = document.getElementById("inputTextarea");
         const submitButton = document.getElementById("submitButton");
         const modal = document.getElementById("myModal");
         const modalResult = document.getElementById("modalResult");
+        const loadingOverlay = document.getElementById("loadingOverlay");
 
         submitButton.addEventListener("click", () => {
             const inputValue = inputTextarea.value;
@@ -158,7 +177,8 @@
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);
                 });
-
+            // 隐藏Loading状态
+            loadingOverlay.style.display = "none";
             inputTextarea.value = ""; // 清空文本框
         });
 
