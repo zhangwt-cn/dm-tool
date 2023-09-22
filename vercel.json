@@ -8,6 +8,10 @@
     {
       "src": "/",
       "dest": "/resources/index.html"
+    },
+    {
+      "src": "/github-mark.png",
+      "dest": "/resources/github-mark.png"
     }
   ]
 }
