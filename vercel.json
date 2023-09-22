@@ -4,6 +4,11 @@
       "src": "/api/dm-convert",
       "dest": "/api/convert.go",
       "methods": ["POST"]
+    },
+    {
+      "src": "/",
+      "dest": "/resources/index.html",
+      "methods": ["POST"]
     }
   ]
 }
