@@ -11,7 +11,7 @@
             text-align: center;
             padding: 20px;
         }
-        
+
         h1 {
             color: #007bff;
         }
@@ -67,6 +67,7 @@
             border-radius: 5px;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
         }
+
         /* 右上角 GitHub 图标样式 */
         .github-icon {
             position: fixed;
@@ -81,28 +82,33 @@
             height: 32px; /* 图标高度 */
             border-radius: 50%; /* 可选：将图标变成圆形 */
         }
-        /* Loading状态样式 */
-        .loading-overlay {
-            position: absolute;
+        /* CSS样式用于loading效果 */
+        #loading {
+            display: none;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(255, 255, 255, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            text-align: center;
+        }
+
+        #loading::after {
+            content: "Loading...";
+            display: inline-block;
+            margin-top: 20%;
+            font-size: 24px;
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
 </head>
 <body>
-    <h1>DDL转换(MySQL -> DM)</h1>
-    <form>
-        <br>
-        <textarea id="inputTextarea" placeholder="
+<h1>DDL转换(MySQL -> DM)</h1>
+<form>
+    <br>
+    <textarea id="inputTextarea" placeholder="
         CREATE TABLE `daily` (
             `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
             `fill_name` varchar(64) NOT NULL DEFAULT '' COMMENT '填报人',
@@ -114,88 +120,90 @@
             PRIMARY KEY (`id`)
           ) ENGINE=InnoDB AUTO_INCREMENT=164 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='日报表';
           "></textarea>
-        <br>
-        <button id="submitButton" type="button">转换</button>
-    </form>
+    <br>
+    <button id="submitButton" type="button">转换</button>
+</form>
 
-    <!-- GitHub 图标链接 -->
-    <a href="https://github.com/zhangwt-cn/dm-tool" target="_blank" class="github-icon">
-        <img src="github-mark.png" alt="GitHub" />
-    </a>
+<!-- GitHub 图标链接 -->
+<a href="https://github.com/zhangwt-cn/dm-tool" target="_blank" class="github-icon">
+    <img src="github-mark.png" alt="GitHub"/>
+</a>
 
-    <!-- 模态框 -->
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <div id="modalResult"></div>
-        </div>
+<!-- 显示loading的区域 -->
+<div id="loading"></div>
+
+<!-- 模态框 -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modalResult"></div>
     </div>
+</div>
 
-    <!-- Loading状态的遮罩层 -->
-    <div id="loading" style="display: none" class="loading-overlay animate__animated animate__bounce">Loading...</div>
+<!-- Loading状态的遮罩层 -->
 
-    <script>
-        // JavaScript部分
-        const inputTextarea = document.getElementById("inputTextarea");
-        const submitButton = document.getElementById("submitButton");
-        const modal = document.getElementById("myModal");
-        const modalResult = document.getElementById("modalResult");
-        const loadingOverlay = document.getElementById("loading");
+<script>
+    // JavaScript部分
+    const inputTextarea = document.getElementById("inputTextarea");
+    const submitButton = document.getElementById("submitButton");
+    const modal = document.getElementById("myModal");
+    const modalResult = document.getElementById("modalResult");
+    const loadingOverlay = document.getElementById("loading");
 
-        submitButton.addEventListener("click", () => {
-            // 显示Loading状态
-            loadingOverlay.style.display = "block";
-            const inputValue = inputTextarea.value;
+    submitButton.addEventListener("click", () => {
+        // 显示Loading状态
+        loadingOverlay.style.display = "block";
+        const inputValue = inputTextarea.value;
 
-            // 构建POST请求的配置
-            const requestOptions = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json", // 设置请求头
-                },
-                body: JSON.stringify({ ddl: inputValue }), // 设置请求体
-            };
+        // 构建POST请求的配置
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", // 设置请求头
+            },
+            body: JSON.stringify({ddl: inputValue}), // 设置请求体
+        };
 
-            // 模拟API请求
-            // 在实际应用中，您需要替换以下URL为您要请求的接口URL
-            fetch("/api/convert", requestOptions)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    let content = data.msg;
-                    if (data.code === "200") {
-                        content = data.data
-                    }
-                    // 处理接口响应
-                    // 更新模态框内容
-                    modalResult.innerHTML = `DM DDL 👇 <pre style="text-align: left;">${content}</pre>`;
-                    // 显示模态框
-                    modal.style.display = "block";
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-            // 隐藏Loading状态
-            loadingOverlay.style.display = "none";
-            inputTextarea.value = ""; // 清空文本框
-        });
+        // 模拟API请求
+        // 在实际应用中，您需要替换以下URL为您要请求的接口URL
+        fetch("/api/convert", requestOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                let content = data.msg;
+                if (data.code === "200") {
+                    content = data.data
+                }
+                // 处理接口响应
+                // 更新模态框内容
+                modalResult.innerHTML = `DM DDL 👇 <pre style="text-align: left;">${content}</pre>`;
+                // 显示模态框
+                modal.style.display = "block";
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        // 隐藏Loading状态
+        loadingOverlay.style.display = "none";
+        inputTextarea.value = ""; // 清空文本框
+    });
 
-        // 当用户点击模态框的关闭按钮时，关闭模态框
-        const closeButton = document.querySelector(".close");
-        closeButton.addEventListener("click", () => {
+    // 当用户点击模态框的关闭按钮时，关闭模态框
+    const closeButton = document.querySelector(".close");
+    closeButton.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    // 当用户点击模态框外部区域时，关闭模态框
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
             modal.style.display = "none";
-        });
-
-        // 当用户点击模态框外部区域时，关闭模态框
-        window.addEventListener("click", (event) => {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        });
-    </script>
+        }
+    });
+</script>
 </body>
 </html>
