@@ -152,7 +152,7 @@
 
     submitButton.addEventListener("click", () => {
         // 显示Loading状态
-        loadingOverlay.style.display = "block";
+        toggleLoading("block")
         const inputValue = inputTextarea.value;
 
         // 构建POST请求的配置
@@ -183,12 +183,12 @@
                 modalResult.innerHTML = `DM DDL 👇 <pre style="text-align: left;">${content}</pre>`;
                 // 显示模态框
                 modal.style.display = "block";
+                toggleLoading("none")
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
+                toggleLoading("none")
             });
-        // 隐藏Loading状态
-        loadingOverlay.style.display = "none";
         inputTextarea.value = ""; // 清空文本框
     });
 
@@ -204,6 +204,12 @@
             modal.style.display = "none";
         }
     });
+
+
+    // 根据传入值 显示隐藏loading
+    function toggleLoading(options) {
+        loadingOverlay.style.display = options;
+    }
 </script>
 </body>
 </html>
